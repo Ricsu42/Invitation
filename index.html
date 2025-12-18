@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<link rel="icon" href="/favicon-invite.png" type="image/png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinner Invitation</title>
+<style>
+:root{
+  --gold:#d4af6a;
+  --dark:#0b0b0b;
+}
+
+/* ================= GLOBAL ================= */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Georgia",serif;
+  background:var(--dark);
+  color:#f5f5f5;
+  overflow-x:hidden;
+  scroll-snap-type:y mandatory;
+}
+
+/* ================= PASSWORD OVERLAY ================= */
+#lock{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at top,#1a1a1a,#000);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+  transition:opacity 1.2s ease,visibility 1.2s;
+}
+#lock.hidden{opacity:0;visibility:hidden}
+.lock-card{
+  background:rgba(20,20,20,.7);
+  border:1px solid rgba(212,175,106,.3);
+  border-radius:18px;
+  padding:40px 32px;
+  text-align:center;
+  backdrop-filter:blur(12px);
+  box-shadow:0 30px 80px rgba(0,0,0,.7);
+}
+.lock-card h2{color:var(--gold);letter-spacing:2px;margin-bottom:18px}
+.lock-card input{
+  background:#000;border:1px solid var(--gold);
+  color:#fff;padding:12px;width:100%;margin-bottom:14px;
+  border-radius:8px;text-align:center;
+}
+.lock-card button{
+  background:var(--gold);color:#000;border:none;
+  padding:12px 26px;border-radius:30px;
+  cursor:pointer;letter-spacing:1px;
+}
+
+/* ================= MUSIC ================= */
+.music-control{
+  position:fixed;top:20px;right:20px;width:54px;height:54px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(20,20,20,.55);backdrop-filter:blur(14px);
+  border:1px solid rgba(212,175,106,.45);
+  color:var(--gold);font-size:18px;cursor:pointer;z-index:300;
+  box-shadow:0 10px 35px rgba(0,0,0,.45);
+  transition:.35s cubic-bezier(.22,1,.36,1);
+}
+.music-control:hover{
+  transform:translateY(-3px) scale(1.05);
+  background:rgba(212,175,106,.9);color:#000;
+}
+.music-control.playing{
+  animation:pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 10px 35px rgba(212,175,106,.35)}
+  50%{box-shadow:0 0 0 10px rgba(212,175,106,0)}
+}
+.music-control{pointer-events:none;opacity:.5}
+body.unlocked .music-control{pointer-events:auto;opacity:1}
+.music-control::after{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  border:2px solid rgba(212,175,106,.35);pointer-events:none;
+}
+
+/* ================= PAGE ================= */
+.page{
+  min-height:100vh;
+  scroll-snap-align:start;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:48px 18px;
+  opacity:0;
+  transform:translateY(50px) scale(.96);
+  transition:opacity 1.4s ease,transform 1.4s cubic-bezier(.22,1,.36,1);
+}
+.page.show{opacity:1;transform:none}
+
+.card{
+  max-width:760px;width:100%;
+  background:rgba(20,20,20,.65);
+  border:1px solid rgba(212,175,106,.25);
+  border-radius:18px;padding:48px 32px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+  text-align:center;position:relative;
+}
+.card::after{
+  content:'';position:absolute;inset:-1px;border-radius:18px;
+  box-shadow:0 0 40px rgba(212,175,106,.08);pointer-events:none;
+}
+h1,h2{color:var(--gold);font-weight:500;letter-spacing:2px;margin-bottom:22px}
+.divider{width:60px;height:1px;background:var(--gold);margin:22px auto;opacity:.6}
+p{font-size:15px;line-height:1.8;opacity:.9}
+
+/* ================= COUNTDOWN ================= */
+#countdown{margin-top:22px;font-size:14px;letter-spacing:3px;color:#e5cfa0}
+
+/* ================= ITINERARY ================= */
+.itinerary-item{display:flex;justify-content:space-between;margin:26px 0;opacity:0;transform:translateY(20px);transition:all .9s ease}
+.itinerary-item.show{opacity:1;transform:none}
+.itinerary-time{color:var(--gold);font-size:13px}
+.itinerary-text{text-align:right;font-size:14px}
+
+/* ================= MAP BUTTON ================= */
+.map-btn{display:inline-block;margin-top:18px;padding:10px 24px;border-radius:30px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;letter-spacing:1px;transition:.3s}
+.map-btn:hover{background:var(--gold);color:#000}
+
+/* ================= HEART ================= */
+.heart{width:60px;height:60px;margin:28px auto;background:var(--gold);transform:rotate(45deg);cursor:pointer;position:relative;transition:transform .3s}
+.heart:hover{transform:rotate(45deg) scale(1.1)}
+.heart::before,.heart::after{content:'';position:absolute;width:60px;height:60px;background:var(--gold);border-radius:50%}
+.heart::before{top:-30px;left:0}
+.heart::after{left:-30px;top:0}
+
+/* ================= SPARKLE ================= */
+.sparkle{
+  position:fixed;width:6px;height:6px;background:#f3d9a4;border-radius:50%;pointer-events:none;
+  animation:spark .9s ease forwards;
+}
+@keyframes spark{from{opacity:1}to{opacity:0;transform:translate(var(--x),var(--y)) scale(0)}}
+
+/* ================= SWIPE ================= */
+.swipe{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:2px;color:var(--gold);opacity:.6}
+.swipe::after{content:'⌃';display:block;font-size:18px;animation:swipeUp 1.6s infinite}
+@keyframes swipeUp{0%{opacity:0;transform:translateY(10px)}50%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-14px)}}
+
+/* ================= PARTICLES ================= */
+.particles{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.particles span{position:absolute;width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:.22;animation:float linear infinite}
+@keyframes float{0%{transform:translateY(110vh)}100%{transform:translateY(-10vh)}}
+
+/* ================= MOMENTS ================= */
+#moments{display:none;flex-direction:column;align-items:center}
+.moment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:24px}
+.moment{
+  height:180px;background:rgba(255,255,255,.05);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;
+  opacity:0;transform:scale(.95);transition:all .6s ease;
+  cursor:pointer;
+}
+.moment img{width:100%;height:100%;object-fit:cover;border-radius:14px;transition:transform .5s ease, box-shadow .5s ease}
+.moment.show{opacity:1;transform:scale(1)}
+.moment:hover img{transform:scale(1.05);box-shadow:0 0 20px var(--gold)}
+
+/* ================= MENU ================= */
+.menu-course{margin:26px 0;opacity:0;transform:translateY(20px);transition:all .9s ease;text-align:center}
+.menu-course.show{opacity:1;transform:none}
+.course-title{display:block;color:var(--gold);letter-spacing:2px;font-size:13px;margin-bottom:6px}
+.course-desc{font-size:14px;opacity:.85;line-height:1.6}
+
+/* ================= CINEMATIC VARIANTS ================= */
+.page.hero.show{transform:scale(1) translateY(0);opacity:1;}
+.page.note.show{transform:translateY(0) scale(1);opacity:1;}
+.page.details.show{transform:translateX(0) scale(1);opacity:1;}
+.page.itinerary.show{transform:translateY(0) scale(1);opacity:1;}
+.page.menu.show{transform:translateY(0) scale(1);opacity:1;}
+.page.closing.show{transform:scale(1.02) translateY(0);opacity:1;}
+.page.moments.show{transform:scale(1) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- MUSIC -->
+<audio id="bgmMain" loop preload="auto">
+  <source src="/bgm-main.mp3" type="audio/mpeg">
+</audio>
+<audio id="bgmMoments" loop preload="auto">
+  <source src="/bgm-moments.mp3" type="audio/mpeg">
+</audio>
+<div class="music-control" onclick="toggleMusic()"><span id="musicIcon">▶︎</span></div>
+
+<!-- PASSWORD -->
+<div id="lock">
+  <div class="lock-card">
+    <h2>Helen Afriani</h2>
+    <h2>Invitation</h2><br>
+    <p>Enter the password to continue</p><br>
+    <input type="password" id="pwd" placeholder="Password">
+    <button onclick="unlock()">OPEN</button>
+  </div>
+</div>
+
+<div class="particles">
+  <span style="left:15%;animation-duration:45s"></span>
+  <span style="left:35%;animation-duration:50s"></span>
+  <span style="left:60%;animation-duration:42s"></span>
+  <span style="left:85%;animation-duration:55s"></span>
+</div>
+<div class="swipe">SWIPE</div>
+
+<!-- HERO -->
+<section class="page hero">
+  <div class="card">
+    <h1>Christmast Dinner Invitation</h1>
+    <div class="divider"></div>
+    <p id="typing"></p>
+    <div id="countdown"></div>
+  </div>
+</section>
+
+<!-- NOTE -->
+<section class="page note">
+  <div class="card">
+    <h2>A Note Before the Event</h2>
+    <div class="divider"></div>
+    <p>Before the event begins,<br>I want you to know<br>How much this moment means to me.</p><br>
+    <p>Not because of the place,<br>Not the dinner itself,<br>But because it is shared with you.</p>
+    <div class="divider"></div>
+    <p style="font-style:italic;opacity:.8">This night is not about perfection,<br>But about presence<br>Shared quietly between us.</p>
+    <p style="margin-top:18px;color:var(--gold)">— Rcs</p>
+  </div>
+</section>
+
+<!-- DETAILS -->
+<section class="page details">
+  <div class="card">
+    <h2>Dinner Details</h2>
+    <div class="divider"></div>
+    <p>⏰ 17.30 – Until the End<br>📍 Picca Steakroom<br>👗 Black Outfit<br>👟 Nike (Couple)</p>
+    <a class="map-btn" target="_blank" href="https://maps.app.goo.gl/jSZ6XNFeaouBgtxm6">📍 Open Google Maps</a>   
+  </div>
+</section>
+
+<!-- ITINERARY -->
+<section class="page itinerary">
+  <div class="card">
+    <h2>Event Flow</h2>
+    <div class="divider"></div>
+    <div class="itinerary-item"><div class="itinerary-time">17.30</div><div class="itinerary-text">Arrival and Warm Welcome</div></div>
+    <div class="itinerary-item"><div class="itinerary-time">17.45</div><div class="itinerary-text">Dinner Begins</div></div>
+    <div class="itinerary-item"><div class="itinerary-time">18.00</div><div class="itinerary-text">Intimate Conversation</div></div>
+    <div class="itinerary-item"><div class="itinerary-time">19.00</div><div class="itinerary-text">Depart From The Venue</div></div>
+    <div class="itinerary-item"><div class="itinerary-time">19.30</div><div class="itinerary-text">Photobooth at Blok M</div></div>
+    <div class="itinerary-item"><div class="itinerary-time">21.30</div><div class="itinerary-text">Return home</div></div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="page menu">
+  <div class="card">
+    <h2>Dinner's Menu</h2>
+    <div class="divider"></div>
+    <div class="menu-course"><span class="course-title">Appetizer</span><p class="course-desc">Calamari Skewers, Truffle Croquette Mac & Cheese, etc</p></div>
+    <div class="menu-course"><span class="course-title">Main Course</span><p class="course-desc">Picanha MB5/MB7 with All you can carbs</p></div>
+    <div class="menu-course"><span class="course-title">Pasta</span><p class="course-desc">Aglio E Olio Pasta, Carbonara Pasta, etc</p></div>
+    <div class="menu-course"><span class="course-title">Sides</span><p class="course-desc">Ratatouille, Grilled Corn Ribs, etc</p></div>
+    <div class="menu-course"><span class="course-title">Dessert</span><p class="course-desc">Classic Tiramisu & Pannacotta</p></div>
+    <div class="menu-course"><span class="course-title">Beverage</span><p class="course-desc">Tea, Mineral Water, etc</p></div>
+    <div class="menu-course"><span class="course-title">Mocktail</span><p class="course-desc">Cuddle On the Beach, Cham o Chea, etc</p>
+      <a class="map-btn" target="_blank" href="https://drive.google.com/file/d/1XatzJRsMNveeErLFS34reQIn9Gvutiuo/view">🍝 Open Menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="page closing">
+  <div class="card">
+    <h2>Closing</h2>
+    <div class="divider"></div>
+    <p>Touch the heart when the night feels complete.</p>
+    <div class="heart" onclick="unlockMoments(event)"></div>
+  </div>
+</section>
+
+<!-- MOMENTS -->
+<section class="page moments" id="moments">
+  <div class="card">
+    <h2>Our Moments</h2>
+    <div class="divider"></div>
+    <div class="moment-grid">
+      <div class="moment"><img src="/photo1.jpg" alt="Photo 1"></div>
+      <div class="moment"><img src="/photo2.jpg" alt="Photo 2"></div>
+      <div class="moment"><img src="/photo3.jpg" alt="Photo 3"></div>
+    </div>
+    <div style="margin-top:20px; text-align:center;">
+      <button id="downloadStory" class="map-btn">Download & Share</button>
+    </div>
+  </div>
+</section>
+
+<!-- html2canvas library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// ================= GLOBAL =================
+const INVITATION_PASSWORD="25122025";
+const target=new Date("2025-12-25T17:30:00");
+const bgmMain=document.getElementById("bgmMain");
+const bgmMoments=document.getElementById("bgmMoments");
+const icon=document.getElementById("musicIcon");
+const moments=document.getElementById("moments");
+let currentMusic=null,isPlaying=false;
+
+// ================= PASSWORD =================
+function unlock(){
+  if(document.getElementById("pwd").value===INVITATION_PASSWORD){
+    document.body.classList.add("unlocked");
+    document.getElementById("lock").classList.add("hidden");
+    if(!isPlaying){currentMusic=bgmMain;fadeIn(bgmMain);isPlaying=true;icon.textContent="❚❚";document.querySelector('.music-control').classList.add('playing')}
+  } else {alert("Incorrect password ✨")}
+}
+
+// ================= PAGE OBSERVER =================
+const obs=new IntersectionObserver(e=>{e.forEach(x=>x.isIntersecting&&x.target.classList.add("show"))},{threshold:.3});
+document.querySelectorAll(".page").forEach(p=>obs.observe(p));
+
+// ================= ITINERARY =================
+const itinObs=new IntersectionObserver(e=>{e.forEach((x,i)=>{if(x.isIntersecting)setTimeout(()=>x.target.classList.add("show"),i*200)})},{threshold:.4});
+document.querySelectorAll(".itinerary-item").forEach(i=>itinObs.observe(i));
+
+// ================= MENU =================
+const menuObs=new IntersectionObserver(e=>{e.forEach((x,i)=>{if(x.isIntersecting)setTimeout(()=>x.target.classList.add("show"),i*220)})},{threshold:.4});
+document.querySelectorAll(".menu-course").forEach(m=>menuObs.observe(m));
+
+// ================= TYPING =================
+const text="A special night, made for us.";let i=0;const t=document.getElementById("typing");
+(function type(){if(i<text.length){t.textContent+=text[i++];setTimeout(type,60)}})();
+
+// ================= COUNTDOWN =================
+setInterval(()=>{
+  const d=target-new Date();
+  if(d>0){
+    const dd=Math.floor(d/864e5);
+    const hh=String(Math.floor(d/36e5)%24).padStart(2,'0');
+    const mm=String(Math.floor(d/6e4)%60).padStart(2,'0');
+    const ss=String(Math.floor(d/1e3)%60).padStart(2,'0');
+    document.getElementById("countdown").textContent=`${dd}D ${hh}H ${mm}M ${ss}S`;
+  }
+},1000);
+
+// ================= HEART / MOMENTS =================
+function unlockMoments(e){
+  for(let i=0;i<20;i++){
+    const s=document.createElement("span");
+    s.className="sparkle";
+    s.style.left=e.clientX+"px";
+    s.style.top=e.clientY+"px";
+    s.style.setProperty("--x",`${Math.random()*140-70}px`);
+    s.style.setProperty("--y",`${Math.random()*140-70}px`);
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),900);
+  }
+  if (new Date()>=target){
+    fadeOut(bgmMain);
+    currentMusic=bgmMoments;
+    fadeIn(bgmMoments);
+    isPlaying=true;
+    icon.textContent="❚❚";
+    document.querySelector('.music-control').classList.add('playing');
+    moments.style.display="flex";
+    // Animate moments
+    const momentItems=document.querySelectorAll(".moment");
+    momentItems.forEach((m,i)=>setTimeout(()=>m.classList.add("show"),i*250));
+    moments.scrollIntoView({behavior:"smooth"});
+  } else {
+    alert("Our Moments will unlock on the special day ✨");
+  }
+}
+
+// ================= MUSIC FUNCTIONS =================
+function fadeIn(audio,targetVol=0.6,duration=2000){
+  audio.volume=0;
+  audio.play().catch(()=>{});
+  let step=targetVol/(duration/50);
+  const fade=setInterval(()=>{
+    if(audio.volume<targetVol) audio.volume=Math.min(targetVol,audio.volume+step);
+    else clearInterval(fade);
+  },50);
+}
+
+function fadeOut(audio,duration=1500){
+  let step=audio.volume/(duration/50);
+  const fade=setInterval(()=>{
+    if(audio.volume>0) audio.volume=Math.max(0,audio.volume-step);
+    else {audio.pause(); clearInterval(fade);}
+  },50);
+}
+
+function toggleMusic(){
+  if(!currentMusic) currentMusic=bgmMain;
+  if(!isPlaying){
+    fadeIn(currentMusic);
+    icon.textContent="❚❚";
+    document.querySelector('.music-control').classList.add('playing');
+  } else {
+    fadeOut(currentMusic);
+    icon.textContent="▶︎";
+    document.querySelector('.music-control').classList.remove('playing');
+  }
+  isPlaying=!isPlaying;
+}
+
+// DOWNLOAD MOMENTS
+document.getElementById('downloadStory').addEventListener('click',()=>{
+  const card=document.querySelector('#moments .card');
+  html2canvas(card,{useCORS:true, scale:2}).then(canvas=>{
+    canvas.toBlob(function(blob){
+      const link=document.createElement('a');
+      link.download='OurMoments.png';
+      link.href=URL.createObjectURL(blob);
+      link.click();
+      alert("Saved as image! You can now share it on Instagram or WhatsApp.");
+    },'image/png');
+  });
+});
+</script>
+</body>
+</html>
