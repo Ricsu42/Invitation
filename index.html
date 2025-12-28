@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<link rel="icon" href="favicon-invite.png" type="image/png">
+<link rel="icon" href="/favicon-invite.png" type="image/png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dinner Invitation</title>
@@ -9,6 +9,7 @@
 :root{
   --gold:#d4af6a;
   --dark:#0b0b0b;
+  --white:#f5f5f5;
 }
 
 /* ================= GLOBAL ================= */
@@ -16,30 +17,24 @@
 body{
   font-family:"Georgia",serif;
   background:var(--dark);
-  color:#f5f5f5;
+  color:var(--white);
   overflow-x:hidden;
   scroll-snap-type:y mandatory;
 }
 
 /* ================= PASSWORD OVERLAY ================= */
 #lock{
-  position:fixed;
-  inset:0;
+  position:fixed; inset:0;
   background:radial-gradient(circle at top,#1a1a1a,#000);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-  transition:opacity 1.2s ease,visibility 1.2s;
+  display:flex; justify-content:center; align-items:center;
+  z-index:999; transition:opacity 1.2s ease,visibility 1.2s;
 }
 #lock.hidden{opacity:0;visibility:hidden}
 .lock-card{
   background:rgba(20,20,20,.7);
   border:1px solid rgba(212,175,106,.3);
-  border-radius:18px;
-  padding:40px 32px;
-  text-align:center;
-  backdrop-filter:blur(12px);
+  border-radius:18px; padding:40px 32px;
+  text-align:center; backdrop-filter:blur(12px);
   box-shadow:0 30px 80px rgba(0,0,0,.7);
 }
 .lock-card h2{color:var(--gold);letter-spacing:2px;margin-bottom:18px}
@@ -64,33 +59,13 @@ body{
   box-shadow:0 10px 35px rgba(0,0,0,.45);
   transition:.35s cubic-bezier(.22,1,.36,1);
 }
-.music-control:hover{
-  transform:translateY(-3px) scale(1.05);
-  background:rgba(212,175,106,.9);color:#000;
-}
-.music-control.playing{
-  animation:pulse 2.5s ease-in-out infinite;
-}
-@keyframes pulse{
-  0%,100%{box-shadow:0 10px 35px rgba(212,175,106,.35)}
-  50%{box-shadow:0 0 0 10px rgba(212,175,106,0)}
-}
-.music-control{pointer-events:none;opacity:.5}
-body.unlocked .music-control{pointer-events:auto;opacity:1}
-.music-control::after{
-  content:'';position:absolute;inset:-3px;border-radius:50%;
-  border:2px solid rgba(212,175,106,.35);pointer-events:none;
-}
 
-/* ================= PAGE ================= */
+/* ================= PAGE & CARD ================= */
 .page{
   min-height:100vh;
   scroll-snap-align:start;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:48px 18px;
-  opacity:0;
+  display:flex; justify-content:center; align-items:center;
+  padding:48px 18px; opacity:0;
   transform:translateY(50px) scale(.96);
   transition:opacity 1.4s ease,transform 1.4s cubic-bezier(.22,1,.36,1);
 }
@@ -105,63 +80,15 @@ body.unlocked .music-control{pointer-events:auto;opacity:1}
   box-shadow:0 30px 80px rgba(0,0,0,.6);
   text-align:center;position:relative;
 }
-.card::after{
-  content:'';position:absolute;inset:-1px;border-radius:18px;
-  box-shadow:0 0 40px rgba(212,175,106,.08);pointer-events:none;
-}
 h1,h2{color:var(--gold);font-weight:500;letter-spacing:2px;margin-bottom:22px}
 .divider{width:60px;height:1px;background:var(--gold);margin:22px auto;opacity:.6}
 p{font-size:15px;line-height:1.8;opacity:.9}
 
-/* ================= COUNTDOWN ================= */
-#countdown{margin-top:22px;font-size:14px;letter-spacing:3px;color:#e5cfa0}
-
 /* ================= ITINERARY ================= */
-.itinerary-item{display:flex;justify-content:space-between;margin:26px 0;opacity:0;transform:translateY(20px);transition:all .9s ease}
+.itinerary-item{display:flex;justify-content:space-between;margin:26px 0;opacity:0;transform:translateY(20px);transition:all .9s ease; border-bottom: 1px solid rgba(212,175,106,0.1); padding-bottom: 5px;}
 .itinerary-item.show{opacity:1;transform:none}
-.itinerary-time{color:var(--gold);font-size:13px}
+.itinerary-time{color:var(--gold);font-size:13px; font-weight: bold;}
 .itinerary-text{text-align:right;font-size:14px}
-
-/* ================= MAP BUTTON ================= */
-.map-btn{display:inline-block;margin-top:18px;padding:10px 24px;border-radius:30px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;letter-spacing:1px;transition:.3s}
-.map-btn:hover{background:var(--gold);color:#000}
-
-/* ================= HEART ================= */
-.heart{width:60px;height:60px;margin:28px auto;background:var(--gold);transform:rotate(45deg);cursor:pointer;position:relative;transition:transform .3s}
-.heart:hover{transform:rotate(45deg) scale(1.1)}
-.heart::before,.heart::after{content:'';position:absolute;width:60px;height:60px;background:var(--gold);border-radius:50%}
-.heart::before{top:-30px;left:0}
-.heart::after{left:-30px;top:0}
-
-/* ================= SPARKLE ================= */
-.sparkle{
-  position:fixed;width:6px;height:6px;background:#f3d9a4;border-radius:50%;pointer-events:none;
-  animation:spark .9s ease forwards;
-}
-@keyframes spark{from{opacity:1}to{opacity:0;transform:translate(var(--x),var(--y)) scale(0)}}
-
-/* ================= SWIPE ================= */
-.swipe{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:2px;color:var(--gold);opacity:.6}
-.swipe::after{content:'⌃';display:block;font-size:18px;animation:swipeUp 1.6s infinite}
-@keyframes swipeUp{0%{opacity:0;transform:translateY(10px)}50%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-14px)}}
-
-/* ================= PARTICLES ================= */
-.particles{position:fixed;inset:0;z-index:-1;overflow:hidden}
-.particles span{position:absolute;width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:.22;animation:float linear infinite}
-@keyframes float{0%{transform:translateY(110vh)}100%{transform:translateY(-10vh)}}
-
-/* ================= MOMENTS ================= */
-#moments{display:none;flex-direction:column;align-items:center}
-.moment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:24px}
-.moment{
-  height:180px;background:rgba(255,255,255,.05);border-radius:14px;
-  display:flex;align-items:center;justify-content:center;color:#aaa;font-size:13px;
-  opacity:0;transform:scale(.95);transition:all .6s ease;
-  cursor:pointer;
-}
-.moment img{width:100%;height:100%;object-fit:cover;border-radius:14px;transition:transform .5s ease, box-shadow .5s ease}
-.moment.show{opacity:1;transform:scale(1)}
-.moment:hover img{transform:scale(1.05);box-shadow:0 0 20px var(--gold)}
 
 /* ================= MENU ================= */
 .menu-course{margin:26px 0;opacity:0;transform:translateY(20px);transition:all .9s ease;text-align:center}
@@ -169,28 +96,44 @@ p{font-size:15px;line-height:1.8;opacity:.9}
 .course-title{display:block;color:var(--gold);letter-spacing:2px;font-size:13px;margin-bottom:6px}
 .course-desc{font-size:14px;opacity:.85;line-height:1.6}
 
-/* ================= CINEMATIC VARIANTS ================= */
-.page.hero.show{transform:scale(1) translateY(0);opacity:1;}
-.page.note.show{transform:translateY(0) scale(1);opacity:1;}
-.page.details.show{transform:translateX(0) scale(1);opacity:1;}
-.page.itinerary.show{transform:translateY(0) scale(1);opacity:1;}
-.page.menu.show{transform:translateY(0) scale(1);opacity:1;}
-.page.closing.show{transform:scale(1.02) translateY(0);opacity:1;}
-.page.moments.show{transform:scale(1) translateY(0);opacity:1;}
+/* ================= MOMENTS (WEB: 3 MENDATAR) ================= */
+#moments-section{display:none;}
+.moment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}
+.moment{
+  aspect-ratio:1/1; background:rgba(255,255,255,.05);border-radius:10px;
+  overflow:hidden; opacity:0;transform:scale(.95);transition:all .6s ease;
+}
+.moment img{width:100%;height:100%;object-fit:cover;}
+.moment.show{opacity:1;transform:scale(1)}
+
+/* ================= MEMORY (VIDEO) ================= */
+#video-section{display:none;}
+.video-wrapper{
+  width:100%; max-width:300px; margin:20px auto;
+  border:2px solid var(--gold); border-radius:15px; overflow:hidden;
+}
+video{width:100%; display:block;}
+
+/* ================= UTILS ================= */
+.map-btn{display:inline-block;margin-top:18px;padding:10px 24px;border-radius:30px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;letter-spacing:1px;transition:.3s;cursor:pointer;background:transparent; font-size: 13px;}
+.map-btn:hover{background:var(--gold);color:#000}
+
+.heart{width:60px;height:60px;margin:28px auto;background:var(--gold);transform:rotate(45deg);cursor:pointer;position:relative;transition:transform .3s}
+.heart::before,.heart::after{content:'';position:absolute;width:60px;height:60px;background:var(--gold);border-radius:50%}
+.heart::before{top:-30px;left:0}
+.heart::after{left:-30px;top:0}
+
+.particles{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.particles span{position:absolute;width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:.22;animation:float linear infinite}
+@keyframes float{0%{transform:translateY(110vh)}100%{transform:translateY(-10vh)}}
 </style>
 </head>
 <body>
 
-<!-- MUSIC -->
-<audio id="bgmMain" loop preload="auto">
-  <source src="bgm-main.mp3" type="audio/mpeg">
-</audio>
-<audio id="bgmMoments" loop preload="auto">
-  <source src="bgm-moments.mp3" type="audio/mpeg">
-</audio>
-<div class="music-control" onclick="toggleMusic()"><span id="musicIcon">▶︎</span></div>
+<audio id="bgmMain" loop preload="auto"><source src="bgm-main.mp3" type="audio/mpeg"></audio>
+<audio id="bgmMoments" loop preload="auto"><source src="bgm-moments.mp3" type="audio/mpeg"></audio>
+<div class="music-control" onclick="toggleMusic()"><span id="musicIcon">❚❚</span></div>
 
-<!-- PASSWORD -->
 <div id="lock">
   <div class="lock-card">
     <h2>Helen Afriani</h2>
@@ -203,23 +146,19 @@ p{font-size:15px;line-height:1.8;opacity:.9}
 
 <div class="particles">
   <span style="left:15%;animation-duration:45s"></span>
-  <span style="left:35%;animation-duration:50s"></span>
-  <span style="left:60%;animation-duration:42s"></span>
+  <span style="left:50%;animation-duration:40s"></span>
   <span style="left:85%;animation-duration:55s"></span>
 </div>
-<div class="swipe">SWIPE</div>
 
-<!-- HERO -->
 <section class="page hero">
   <div class="card">
-    <h1>Christmast Dinner Invitation</h1>
+    <h1>Christmas Dinner</h1>
     <div class="divider"></div>
     <p id="typing"></p>
-    <div id="countdown"></div>
+    <div id="countdown" style="margin-top:15px; color:var(--gold); letter-spacing:2px;"></div>
   </div>
 </section>
 
-<!-- NOTE -->
 <section class="page note">
   <div class="card">
     <h2>A Note Before the Event</h2>
@@ -232,7 +171,6 @@ p{font-size:15px;line-height:1.8;opacity:.9}
   </div>
 </section>
 
-<!-- DETAILS -->
 <section class="page details">
   <div class="card">
     <h2>Dinner Details</h2>
@@ -242,7 +180,6 @@ p{font-size:15px;line-height:1.8;opacity:.9}
   </div>
 </section>
 
-<!-- ITINERARY -->
 <section class="page itinerary">
   <div class="card">
     <h2>Event Flow</h2>
@@ -257,7 +194,6 @@ p{font-size:15px;line-height:1.8;opacity:.9}
   </div>
 </section>
 
-<!-- MENU -->
 <section class="page menu">
   <div class="card">
     <h2>Dinner's Menu</h2>
@@ -274,7 +210,6 @@ p{font-size:15px;line-height:1.8;opacity:.9}
   </div>
 </section>
 
-<!-- CLOSING -->
 <section class="page closing">
   <div class="card">
     <h2>Closing</h2>
@@ -284,60 +219,91 @@ p{font-size:15px;line-height:1.8;opacity:.9}
   </div>
 </section>
 
-<!-- MOMENTS -->
-<section class="page moments" id="moments">
+<section class="page moments" id="moments-section">
   <div class="card">
-    <h2>Our Moments</h2>
+    <h2>Our Memory</h2>
     <div class="divider"></div>
     <div class="moment-grid">
-      <div class="moment"><img src="photo1.jpeg" alt="Photo 1"></div>
-      <div class="moment"><img src="photo2.jpeg" alt="Photo 2"></div>
-      <div class="moment"><img src="photo3.jpeg" alt="Photo 3"></div>
+      <div class="moment"><img src="photo1.jpeg" alt="1"></div>
+      <div class="moment"><img src="photo2.jpeg" alt="2"></div>
+      <div class="moment"><img src="photo3.jpeg" alt="3"></div>
     </div>
-    <div style="margin-top:20px; text-align:center;">
-      <button id="downloadStory" class="map-btn">Download & Share</button>
-    </div>
+    <button id="downloadPhotoStory" class="map-btn">✨ Download Photo</button>
   </div>
 </section>
 
-<!-- html2canvas library -->
+<section class="page memory" id="video-section">
+  <div class="card">
+    <h2>Our Moments</h2>
+    <div class="divider"></div>
+    <div class="video-wrapper">
+      <video id="mainVideo" controls crossorigin="anonymous">
+        <source src="video.mp4" type="video/mp4">
+      </video>
+    </div>
+    <button id="downloadVideoStory" class="map-btn">🎬 Download Video</button>
+  </div>
+</section>
+
+<div id="story-template" style="position:absolute; left:-9999px; top:0;"> 
+  <canvas id="recordCanvas" width="1080" height="1920" style="display:none;"></canvas>
+  <div id="story-wrapper" style="width:1080px; height:1920px; background:radial-gradient(circle at top,#1a1a1a,#000); display:flex; flex-direction:column; justify-content:space-between; align-items:center; padding:120px 60px; color:#fff; text-align:center;">
+    <div>
+      <h1 style="font-size:45px;font-family:'Georgia',serif; color:#d4af6a; font-weight:bold; letter-spacing:8px;margin-top:24px">Our Moment</h1>
+      <div style="width:400px;height:2px;background:var(--gold);margin:22px auto;opacity:.6"></div>
+    </div>
+    
+    <div id="story-content-area" style="width:100%; display:flex; justify-content:center; gap:30px; align-items:center;"></div>
+
+    <div style="margin-bottom:80px;">
+        <p style="font-size:45px;font-family:'Georgia',serif; color:#d4af6a; font-weight:bold; letter-spacing:8px; margin-top:20px;">25 · 12 · 2025</p>
+        <p style="font-size:22px;font-family:'Georgia',serif; opacity:0.8; margin-top:10px; letter-spacing:5px;">Love, gratitude, and a heart full of grace</p>
+        <p style="font-size:22px;font-family:'Georgia',serif; opacity:0.5; margin-top:10px; letter-spacing:5px;">🩷</p>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-// ================= GLOBAL =================
 const INVITATION_PASSWORD="25122025";
 const target=new Date("2025-12-25T17:30:00");
 const bgmMain=document.getElementById("bgmMain");
 const bgmMoments=document.getElementById("bgmMoments");
 const icon=document.getElementById("musicIcon");
-const moments=document.getElementById("moments");
-let currentMusic=null,isPlaying=false;
+let currentMusic=null, isPlaying=false;
 
-// ================= PASSWORD =================
+// Unlock Logic
 function unlock(){
   if(document.getElementById("pwd").value===INVITATION_PASSWORD){
-    document.body.classList.add("unlocked");
     document.getElementById("lock").classList.add("hidden");
-    if(!isPlaying){currentMusic=bgmMain;fadeIn(bgmMain);isPlaying=true;icon.textContent="❚❚";document.querySelector('.music-control').classList.add('playing')}
-  } else {alert("Incorrect password ✨")}
+    if(!isPlaying){ currentMusic=bgmMain; fadeIn(bgmMain); isPlaying=true; }
+  } else { alert("Wrong password!"); }
 }
 
-// ================= PAGE OBSERVER =================
+// Observers
 const obs=new IntersectionObserver(e=>{e.forEach(x=>x.isIntersecting&&x.target.classList.add("show"))},{threshold:.3});
-document.querySelectorAll(".page").forEach(p=>obs.observe(p));
+document.querySelectorAll(".page, .itinerary-item, .menu-course").forEach(p=>obs.observe(p));
 
-// ================= ITINERARY =================
-const itinObs=new IntersectionObserver(e=>{e.forEach((x,i)=>{if(x.isIntersecting)setTimeout(()=>x.target.classList.add("show"),i*200)})},{threshold:.4});
-document.querySelectorAll(".itinerary-item").forEach(i=>itinObs.observe(i));
+// Heart Click -> Show Moments & Video
+function unlockMoments(){
+  if (new Date() >= target){
+    fadeOut(bgmMain); currentMusic=bgmMoments; fadeIn(bgmMoments);
+    document.getElementById("moments-section").style.display="flex";
+    document.getElementById("video-section").style.display="flex";
+    
+    document.getElementById("moments-section").scrollIntoView({behavior:"smooth"});
+    setTimeout(() => {
+        document.querySelectorAll(".moment").forEach((m,idx)=>setTimeout(()=>m.classList.add("show"),idx*200));
+        document.getElementById("mainVideo").play();
+    }, 500);
+  } else { alert("Locked until Dec 25th! ✨"); }
+}
 
-// ================= MENU =================
-const menuObs=new IntersectionObserver(e=>{e.forEach((x,i)=>{if(x.isIntersecting)setTimeout(()=>x.target.classList.add("show"),i*220)})},{threshold:.4});
-document.querySelectorAll(".menu-course").forEach(m=>menuObs.observe(m));
+// Typing Effect
+const text="A special night, made for us."; let i=0;
+(function type(){ if(i<text.length){ document.getElementById("typing").textContent+=text[i++]; setTimeout(type,60)}})();
 
-// ================= TYPING =================
-const text="A special night, made for us.";let i=0;const t=document.getElementById("typing");
-(function type(){if(i<text.length){t.textContent+=text[i++];setTimeout(type,60)}})();
-
-// ================= COUNTDOWN =================
+// Countdown
 setInterval(()=>{
   const d=target-new Date();
   if(d>0){
@@ -349,88 +315,154 @@ setInterval(()=>{
   }
 },1000);
 
-// ================= HEART / MOMENTS =================
-function unlockMoments(e){
-  for(let i=0;i<20;i++){
-    const s=document.createElement("span");
-    s.className="sparkle";
-    s.style.left=e.clientX+"px";
-    s.style.top=e.clientY+"px";
-    s.style.setProperty("--x",`${Math.random()*140-70}px`);
-    s.style.setProperty("--y",`${Math.random()*140-70}px`);
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),900);
-  }
-  if (new Date()>=target){
-    fadeOut(bgmMain);
-    currentMusic=bgmMoments;
-    fadeIn(bgmMoments);
-    isPlaying=true;
-    icon.textContent="❚❚";
-    document.querySelector('.music-control').classList.add('playing');
-    moments.style.display="flex";
-    // Animate moments
-    const momentItems=document.querySelectorAll(".moment");
-    momentItems.forEach((m,i)=>setTimeout(()=>m.classList.add("show"),i*250));
-    moments.scrollIntoView({behavior:"smooth"});
-  } else {
-    alert("Our Moments will unlock on the special day ✨");
-  }
-}
-
-// ================= MUSIC FUNCTIONS =================
-function fadeIn(audio,targetVol=0.6,duration=2000){
-  audio.volume=0;
-  audio.play().catch(()=>{});
-  let step=targetVol/(duration/50);
-  const fade=setInterval(()=>{
-    if(audio.volume<targetVol) audio.volume=Math.min(targetVol,audio.volume+step);
-    else clearInterval(fade);
-  },50);
-}
-
-function fadeOut(audio,duration=1500){
-  let step=audio.volume/(duration/50);
-  const fade=setInterval(()=>{
-    if(audio.volume>0) audio.volume=Math.max(0,audio.volume-step);
-    else {audio.pause(); clearInterval(fade);}
-  },50);
-}
+function fadeIn(a){ a.volume=0; a.play(); let f=setInterval(()=>{if(a.volume<0.5)a.volume+=0.05;else clearInterval(f)},100)}
+function fadeOut(a){ let f=setInterval(()=>{if(a.volume>0.05)a.volume-=0.05;else{a.pause();clearInterval(f)}},100)}
 
 function toggleMusic(){
-  if(!currentMusic) currentMusic=bgmMain;
-  if(!isPlaying){
-    fadeIn(currentMusic);
-    icon.textContent="❚❚";
-    document.querySelector('.music-control').classList.add('playing');
-  } else {
-    fadeOut(currentMusic);
-    icon.textContent="▶︎";
-    document.querySelector('.music-control').classList.remove('playing');
-  }
-  isPlaying=!isPlaying;
+  if(!isPlaying){ currentMusic.play(); isPlaying=true; icon.textContent="❚❚"; }
+  else { currentMusic.pause(); isPlaying=false; icon.textContent="▶︎"; }
 }
 
-// DOWNLOAD MOMENTS
-document.getElementById('downloadStory').addEventListener('click',()=>{
-  const card=document.querySelector('#moments .card');
-  html2canvas(card,{useCORS:true, scale:2}).then(canvas=>{
-    canvas.toBlob(function(blob){
-      const link=document.createElement('a');
-      link.download='OurMoments.png';
-      link.href=URL.createObjectURL(blob);
-      link.click();
-      alert("Saved as image! You can now share it on Instagram or WhatsApp.");
-    },'image/png');
-  });
+// ================= GENERATE STORY CANVAS =================
+function generateStoryCanvas(filename) {
+    const wrapper = document.getElementById('story-wrapper');
+    html2canvas(wrapper, { scale: 2, useCORS: true, width: 1080, height: 1920 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+
+// ================= DOWNLOAD PHOTO STORY (LOGIKA 3 VERTIKAL) =================
+document.getElementById('downloadPhotoStory').addEventListener('click', async () => {
+    const area = document.getElementById('story-content-area');
+    area.innerHTML = "";
+    area.style.flexDirection = "column"; // UBAH KE VERTIKAL SAAT DOWNLOAD
+
+    const photos = document.querySelectorAll('.moment img');
+    photos.forEach(img => {
+        const box = document.createElement('div');
+        box.style.cssText = "width:450px; height:450px; border:5px solid #d4af6a; border-radius:20px; overflow:hidden; background:#111;";
+        const clone = img.cloneNode();
+        clone.style.cssText = "width:100%; height:100%; object-fit:cover;";
+        box.appendChild(clone);
+        area.appendChild(box);
+    });
+
+    generateStoryCanvas("Our Moment.png");
+});
+
+// ================= DOWNLOAD VIDEO STORY =================
+document.getElementById('downloadVideoStory').addEventListener('click', async () => {
+    const video = document.getElementById('mainVideo');
+    const canvas = document.getElementById('recordCanvas');
+    const ctx = canvas.getContext('2d');
+    const btn = document.getElementById('downloadVideoStory');
+
+    // 1. Validasi Audio (Pastikan video sudah di-load)
+    if (video.readyState < 2) {
+        alert("Video belum siap, silakan tunggu sebentar.");
+        return;
+    }
+
+    const originalText = btn.textContent;
+    btn.textContent = "Processing Audio & Video... 🎬";
+    btn.disabled = true;
+
+    // 2. Setup Audio Context untuk menangkap suara
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(video);
+    const destination = audioCtx.createMediaStreamDestination();
+    
+    // Sambungkan suara video ke output rekaman DAN ke speaker (agar tetap terdengar saat proses)
+    source.connect(destination);
+    source.connect(audioCtx.destination);
+
+    // 3. Gabungkan Stream Visual (Canvas) dan Stream Audio
+    const canvasStream = canvas.captureStream(30);
+    const combinedStream = new MediaStream([
+        ...canvasStream.getVideoTracks(),
+        ...destination.stream.getAudioTracks()
+    ]);
+
+    const recorder = new MediaRecorder(combinedStream, {
+        mimeType: 'video/webm;codecs=vp9,opus', // Opus adalah codec audio berkualitas tinggi
+        videoBitsPerSecond: 5000000
+    });
+
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/mp4' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "Our_Moment_With_Sound.mp4";
+        a.click();
+        
+        btn.textContent = originalText;
+        btn.disabled = false;
+        audioCtx.close(); // Tutup audio context setelah selesai
+    };
+
+    // 4. Fungsi Draw (Sama seperti sebelumnya)
+    function drawFrame() {
+        if (video.paused || video.ended) return;
+
+        // Background & Wrapper
+        ctx.fillStyle = "#0b0b0b"; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Bingkai Luar
+        ctx.strokeStyle = "#d4af6a";
+        ctx.lineWidth = 15;
+        ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+        // Header Text
+        ctx.fillStyle = "#d4af6a";
+        ctx.font = "bold 50px Georgia";
+        ctx.textAlign = "center";
+        ctx.fillText("Our Moment", canvas.width / 2, 250);
+
+        // Frame Video
+        const vWidth = 900;
+        const vHeight = (video.videoHeight / video.videoWidth) * vWidth;
+        const vX = (canvas.width - vWidth) / 2;
+        const vY = (canvas.height - vHeight) / 2;
+        
+        ctx.drawImage(video, vX, vY, vWidth, vHeight);
+        ctx.strokeStyle = "#d4af6a";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(vX, vY, vWidth, vHeight);
+
+        // Footer Text
+        ctx.fillStyle = "#d4af6a";
+        ctx.font = "bold 45px Georgia";
+        ctx.fillText("25 · 12 · 2025", canvas.width / 2, canvas.height - 250);
+
+        requestAnimationFrame(drawFrame);
+    }
+
+    // 5. Mulai Rekam
+    video.currentTime = 0;
+    video.muted = false; // Jangan di-mute agar audionya bisa ditangkap stream
+    video.volume = 1.0;
+
+    // Aktifkan AudioContext (diperlukan oleh kebijakan browser)
+    if (audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+    }
+
+    video.play().then(() => {
+        recorder.start();
+        drawFrame();
+    });
+
+    video.onended = () => {
+        recorder.stop();
+    };
 });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
